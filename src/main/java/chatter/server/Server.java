@@ -26,6 +26,7 @@ public class Server {
         Server server = new Server();
         Channel channel = server.boot(Address.serverAddress);
         channel.closeFuture().syncUninterruptibly();
+        Lg.log("main exits");
     }
 
     public Channel boot(InetSocketAddress inetSocketAddress) {
@@ -43,6 +44,7 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
+                Lg.log("shutdown hook running.");
                 long start = System.currentTimeMillis();
                 channel.close();
                 parent.shutdownGracefully();

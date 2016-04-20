@@ -49,14 +49,14 @@ public class Client {
         channel = bootstrap.connect(Address.serverAddress).syncUninterruptibly().channel();
         System.out.println(locateName + ": " + channel.localAddress());
         //prefer command line close than this one below:
-//        Runtime.getRuntime().addShutdownHook(new Thread() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
 
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -64,7 +64,7 @@ public class Client {
                 try {
                     while ((line = reader.readLine()) != null) {
                         if (line.equals("exit")) {
-                            shutdown();
+                            System.exit(0);
                             return;
                         }
                         ChatMessage chatMessage = new ChatMessage(0, locateName, remoteName, line);
@@ -84,7 +84,7 @@ public class Client {
     private void shutdown() {
         Lg.log("shutdown hook running");
         long start = System.currentTimeMillis();
-        eventLoopGroup.shutdownGracefully().syncUninterruptibly();
+        eventLoopGroup.shutdownGracefully();//.syncUninterruptibly();
         long end = System.currentTimeMillis();
         Lg.log("eventLoopGroup shutdown takes : " + (end - start) / 1000 + "s");
     }
