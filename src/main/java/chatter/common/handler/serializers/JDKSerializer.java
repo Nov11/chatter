@@ -8,6 +8,10 @@ import java.io.*;
 /**
  * Created by c0s on 16-4-20.
  */
+
+/**
+ * note that here netty ByteBufAllocator is not utilized.
+ */
 public class JDKSerializer implements Serializer {
     @Override
     public byte[] serialize(Object obj) throws Exception{
@@ -18,7 +22,7 @@ public class JDKSerializer implements Serializer {
         return byteArrayOutputStream.toByteArray();
     }
 
-//    @Override
+    @SuppressWarnings("unchecked")
     private <T> T deserialize(byte[] bytes, int offset, int length) throws Exception{
         ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes, offset, length));
         Object obj = inputStream.readObject();

@@ -29,4 +29,9 @@ public class MsgEncoder extends MessageToByteEncoder<ChatMessage>{
         out.writeInt(bytes.length);
         out.writeBytes(bytes);
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+    }
 }
