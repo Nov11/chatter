@@ -35,7 +35,9 @@ public class Client {
 
     public static void main(String[] args) {
         Client client = new Client("client", "server");
-        client.start();
+        Channel c = client.start();
+        c.closeFuture().syncUninterruptibly();
+        client.shutdown();
     }
 
     public Channel start() {
@@ -49,12 +51,12 @@ public class Client {
         channel = bootstrap.connect(Address.serverAddress).syncUninterruptibly().channel();
         System.out.println(locateName + ": " + channel.localAddress());
         //prefer command line close than this one below:
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                shutdown();
-            }
-        });
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            @Override
+//            public void run() {
+//                shutdown();
+//            }
+//        });
 
         new Thread() {
             @Override
@@ -64,7 +66,8 @@ public class Client {
                 try {
                     while ((line = reader.readLine()) != null) {
                         if (line.equals("exit")) {
-                            System.exit(0);
+//                            System.exit(0);
+                            channel.close();
                             return;
                         }
                         ChatMessage chatMessage = new ChatMessage(0, locateName, remoteName, line);
