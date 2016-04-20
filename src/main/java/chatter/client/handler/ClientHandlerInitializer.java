@@ -26,7 +26,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
                 Lg.log("server " + channel.remoteAddress() + " closed.");
                 Lg.log("exiting");
                 //todo:how to terminate client in handler?
-                System.exit(0);
+//                System.exit(0);
             }
         });
     }

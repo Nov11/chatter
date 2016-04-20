@@ -84,7 +84,7 @@ public class Client {
     private void shutdown() {
         Lg.log("shutdown hook running");
         long start = System.currentTimeMillis();
-        eventLoopGroup.shutdownGracefully();//.syncUninterruptibly();
+        eventLoopGroup.shutdownGracefully().syncUninterruptibly();
         long end = System.currentTimeMillis();
         Lg.log("eventLoopGroup shutdown takes : " + (end - start) / 1000 + "s");
     }
