@@ -27,7 +27,7 @@ public class ServerChildHandler extends SimpleChannelInboundHandler<ChatMessageP
         if (channel == null) {
             Lg.log("message:" + msg + " receiver connection not found.");
             ChatMessage m = new ChatMessage(0, "server", msg.getSender(), "dest: '" + msg.getReceviver() + "' is not online. Msg dropped.");
-            ctx.writeAndFlush(m);
+            ctx.writeAndFlush(m.getChatMessageProto());
             return;
         }
         channel.writeAndFlush(msg);

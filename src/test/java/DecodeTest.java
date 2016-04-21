@@ -1,4 +1,5 @@
 import chatter.common.ChatMessage;
+import chatter.common.ChatMessagePB;
 import chatter.common.handler.MsgDecoder;
 import chatter.common.handler.MsgEncoder;
 import io.netty.buffer.ByteBuf;
@@ -6,6 +7,10 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -93,5 +98,26 @@ public class DecodeTest {
         assertTrue(recv instanceof ChatMessage);
 
         assertTrue(recv.equals(msg));
+    }
+
+    @Test
+    public void testProtobuf() {
+        EmbeddedChannel encode = new EmbeddedChannel(new ProtobufVarint32LengthFieldPrepender(), new ProtobufEncoder());
+        EmbeddedChannel decode = new EmbeddedChannel(new ProtobufVarint32FrameDecoder(), new ProtobufDecoder(ChatMessagePB.ChatMessageProto.getDefaultInstance()));
+
+        ChatMessage chatMessage = new ChatMessage(0, "abcde", "fghij", "from abcde to fghij");
+        assertTrue(encode.writeOutbound(chatMessage.getChatMessageProto()));
+        assertTrue(encode.finish());
+
+        Object outbound = encode.readOutbound();
+        assertNotNull(outbound);
+
+        assertTrue(decode.writeInbound(outbound));
+        assertTrue(decode.finish());
+
+        Object recv = decode.readInbound();
+        assertNotNull(recv);
+        assertTrue(recv instanceof ChatMessagePB.ChatMessageProto);
+        assertTrue(recv.equals(chatMessage.getChatMessageProto()));
     }
 }

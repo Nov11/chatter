@@ -30,8 +30,8 @@ public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
         });
 
         ChannelPipeline pipeline = ch.pipeline();
-//        pipeline.addLast(new IdleStateHandler(8, 4, 10));
-//        pipeline.addLast(new HeartBeatHandler());
+        pipeline.addLast(new IdleStateHandler(8, 4, 10));
+        pipeline.addLast(new HeartBeatHandler());
         pipeline.addLast(new ProtobufVarint32FrameDecoder());
         pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
         pipeline.addLast(new ProtobufEncoder());

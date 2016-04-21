@@ -22,7 +22,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-//        pipeline.addLast(new HeartBeatHandler());
+        pipeline.addLast(new HeartBeatHandler());
         pipeline.addLast(new ProtobufVarint32FrameDecoder());
         pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
         pipeline.addLast(new ProtobufEncoder());
