@@ -2,6 +2,8 @@ package chatter.common.handler;
 
 
 import chatter.common.HearBeatConstants;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleState;
@@ -21,5 +23,19 @@ public class HeartBeatHandler extends ChannelDuplexHandler{
                 ctx.writeAndFlush(HearBeatConstants.ping);
             }
         }
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ByteBuf buf = (ByteBuf)msg;
+        if (buf.readableBytes() >= HearBeatConstants.pingLen) {
+            ByteBuf incoming = buf.slice(0, HearBeatConstants.pingLen);
+            if (ByteBufUtil.compare(incoming, HearBeatConstants.ping) == 0) {
+                ctx.writeAndFlush(HearBeatConstants.pong);
+                buf.readBytes(HearBeatConstants.pingLen);
+                return;
+            }
+        }
+        super.channelRead(ctx, msg);
     }
 }

@@ -1,9 +1,11 @@
 package chatter.server.handler;
 
 import chatter.common.Lg;
+import chatter.common.handler.HeartBeatHandler;
 import chatter.common.handler.MsgDecoder;
 import chatter.common.handler.MsgEncoder;
 import io.netty.channel.*;
+import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * Created by c0s on 16-4-20.
@@ -23,6 +25,8 @@ public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
         });
 
         ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast(new IdleStateHandler(8, 4, 10));
+        pipeline.addLast(new HeartBeatHandler());
         pipeline.addLast(new MsgDecoder());
         pipeline.addLast(new MsgEncoder());
         pipeline.addLast(new RegClientRouteInboundHandler());

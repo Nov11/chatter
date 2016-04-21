@@ -2,10 +2,12 @@ package chatter.client.handler;
 
 import chatter.client.Client;
 import chatter.common.Lg;
+import chatter.common.handler.HeartBeatHandler;
 import chatter.common.handler.MsgDecoder;
 import chatter.common.handler.MsgEncoder;
 import chatter.server.handler.RouterMap;
 import io.netty.channel.*;
+import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * Created by c0s on 16-4-20.
@@ -15,6 +17,8 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+//        pipeline.addLast(new IdleStateHandler(4, 4, 4));
+        pipeline.addLast(new HeartBeatHandler());
         pipeline.addLast(new MsgDecoder());
         pipeline.addLast(new MsgEncoder());
         pipeline.addLast(new ClientHandler());
@@ -24,7 +28,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
             public void operationComplete(ChannelFuture future) throws Exception {
                 Channel channel = future.channel();
                 Lg.log("server " + channel.remoteAddress() + " closed.");
-                Lg.log("exiting child programm");
+                Lg.log("exiting child program");
             }
         });
     }

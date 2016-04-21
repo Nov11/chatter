@@ -6,6 +6,7 @@ import chatter.common.ChatMessage;
 import chatter.common.Lg;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -30,12 +31,12 @@ public class Client {
         this.remoteName = remoteName;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Client client = new Client("client", "server");
         client.start();
     }
 
-    public void start() {
+    public void start() throws InterruptedException {
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap
@@ -43,7 +44,11 @@ public class Client {
                 .channel(NioSocketChannel.class)
                 .handler(new ClientHandlerInitializer())
                 .option(ChannelOption.SO_REUSEADDR, true);
-        channel = bootstrap.connect(Address.serverAddress).syncUninterruptibly().channel();
+        ChannelFuture future = bootstrap.connect(Address.serverAddress);
+        channel = future.sync().channel();
+        if (channel.isActive()) {
+            System.out.println("llll");
+        }
         System.out.println(locateName + ": " + channel.localAddress());
         //prefer command line close than this one below:
 //        Runtime.getRuntime().addShutdownHook(new Thread() {
