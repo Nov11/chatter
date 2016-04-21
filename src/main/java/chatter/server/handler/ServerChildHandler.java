@@ -2,35 +2,31 @@ package chatter.server.handler;
 
 import chatter.common.Address;
 import chatter.common.ChatMessage;
+import chatter.common.ChatMessagePB;
 import chatter.common.Lg;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by c0s on 16-4-20.
  */
 
 @ChannelHandler.Sharable
-public class ServerChildHandler extends SimpleChannelInboundHandler<ChatMessage> {
+public class ServerChildHandler extends SimpleChannelInboundHandler<ChatMessagePB.ChatMessageProto> {
     /**
      * look up router map, find the channel connected with receiver
      * send the message through that channel
      */
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ChatMessage msg) throws Exception {
-        if (msg.getReceiver().equals(Address.serverName)) {
+    protected void channelRead0(ChannelHandlerContext ctx, ChatMessagePB.ChatMessageProto msg) throws Exception {
+        if (msg.getReceviver().equals(Address.serverName)) {
             //register message. ignore
             return;
         }
 
-        Channel channel = RouterMap.findDestinationChannel(msg.getReceiver());
+        Channel channel = RouterMap.findDestinationChannel(msg.getReceviver());
         if (channel == null) {
             Lg.log("message:" + msg + " receiver connection not found.");
-            ChatMessage m = new ChatMessage(0, "server", msg.getSender(), "dest: '" + msg.getReceiver() + "' is not online. Msg dropped.");
+            ChatMessage m = new ChatMessage(0, "server", msg.getSender(), "dest: '" + msg.getReceviver() + "' is not online. Msg dropped.");
             ctx.writeAndFlush(m);
             return;
         }

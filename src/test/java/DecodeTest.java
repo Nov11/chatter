@@ -6,8 +6,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.compression.JdkZlibDecoder;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

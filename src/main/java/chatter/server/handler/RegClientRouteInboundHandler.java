@@ -1,6 +1,7 @@
 package chatter.server.handler;
 
 import chatter.common.ChatMessage;
+import chatter.common.ChatMessagePB;
 import chatter.common.Lg;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -32,8 +33,8 @@ public class RegClientRouteInboundHandler extends ChannelInboundHandlerAdapter{
 //        }
 
         String sender;
-        if (msg instanceof ChatMessage) {
-            ChatMessage c = (ChatMessage) msg;
+        if (msg instanceof ChatMessagePB.ChatMessageProto) {
+            ChatMessagePB.ChatMessageProto c = (ChatMessagePB.ChatMessageProto) msg;
             sender = c.getSender();
         } else {
             Lg.log(this.getClass().getSimpleName() + " receive msg not of type ChatMessage.");

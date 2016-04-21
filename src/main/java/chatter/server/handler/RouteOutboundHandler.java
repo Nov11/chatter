@@ -1,11 +1,6 @@
 package chatter.server.handler;
 
-import chatter.common.ChatMessage;
-import chatter.common.IdUtils;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
 
 /**
  * Created by c0s on 16-4-20.

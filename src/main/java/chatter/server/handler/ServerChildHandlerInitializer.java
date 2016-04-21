@@ -1,10 +1,15 @@
 package chatter.server.handler;
 
+import chatter.common.ChatMessagePB;
 import chatter.common.Lg;
 import chatter.common.handler.HeartBeatHandler;
 import chatter.common.handler.MsgDecoder;
 import chatter.common.handler.MsgEncoder;
 import io.netty.channel.*;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
 
 /**
@@ -25,10 +30,14 @@ public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
         });
 
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new IdleStateHandler(8, 4, 10));
-        pipeline.addLast(new HeartBeatHandler());
-        pipeline.addLast(new MsgDecoder());
-        pipeline.addLast(new MsgEncoder());
+//        pipeline.addLast(new IdleStateHandler(8, 4, 10));
+//        pipeline.addLast(new HeartBeatHandler());
+        pipeline.addLast(new ProtobufVarint32FrameDecoder());
+        pipeline.addLast(new ProtobufVarint32LengthFieldPrepender());
+        pipeline.addLast(new ProtobufEncoder());
+        pipeline.addLast(new ProtobufDecoder(ChatMessagePB.ChatMessageProto.getDefaultInstance()));
+//        pipeline.addLast(new MsgDecoder());
+//        pipeline.addLast(new MsgEncoder());
         pipeline.addLast(new RegClientRouteInboundHandler());
         pipeline.addLast(new ServerChildHandler());
     }

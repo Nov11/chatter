@@ -1,0 +1,11 @@
+package common;
+option java_package="chatter.common";
+option java_outer_classname = "ChatMessagePB";
+
+message ChatMessageProto{
+    required int32 communicationType = 1;
+    required string sender = 2;
+    required string receviver = 3;
+    required string message = 4;
+
+}

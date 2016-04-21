@@ -71,7 +71,7 @@ public class Client {
                             return;
                         }
                         ChatMessage chatMessage = new ChatMessage(0, locateName, remoteName, line);
-                        channel.writeAndFlush(chatMessage);
+                        channel.writeAndFlush(chatMessage.getChatMessageProto());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -80,7 +80,7 @@ public class Client {
         }.start();
 
         ChatMessage chatMessage = new ChatMessage(0, locateName, Address.serverName, "self register");
-        channel.writeAndFlush(chatMessage);
+        channel.writeAndFlush(chatMessage.getChatMessageProto());
         //shutdown netty when server close connection
         //maybe a connection retry will be added in future.
         channel.closeFuture().syncUninterruptibly();
