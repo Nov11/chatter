@@ -11,10 +11,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
+import java.io.*;
 
 /**
  * Created by c0s on 16-4-20.
@@ -35,12 +32,10 @@ public class Client {
 
     public static void main(String[] args) {
         Client client = new Client("client", "server");
-        Channel c = client.start();
-        c.closeFuture().syncUninterruptibly();
-        client.shutdown();
+        client.start();
     }
 
-    public Channel start() {
+    public void start() {
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap
@@ -81,7 +76,12 @@ public class Client {
 
         ChatMessage chatMessage = new ChatMessage(0, locateName, Address.serverName, "self register");
         channel.writeAndFlush(chatMessage);
-        return channel;
+        //shutdown netty when server close connection
+        //maybe a connection retry will be added in future.
+        channel.closeFuture().syncUninterruptibly();
+        shutdown();
+        //exit the client [workable]
+        System.exit(0);
     }
 
     private void shutdown() {

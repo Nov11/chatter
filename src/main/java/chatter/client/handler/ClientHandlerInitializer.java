@@ -24,9 +24,7 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
             public void operationComplete(ChannelFuture future) throws Exception {
                 Channel channel = future.channel();
                 Lg.log("server " + channel.remoteAddress() + " closed.");
-                Lg.log("exiting");
-                //todo:how to terminate client in handler?
-//                System.exit(0);
+                Lg.log("exiting child programm");
             }
         });
     }
