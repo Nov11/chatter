@@ -10,6 +10,7 @@ import io.netty.channel.*;
  * Created by c0s on 16-4-20.
  */
 public class RegClientRouteInboundHandler extends ChannelInboundHandlerAdapter{
+    private static Lg logger = new Lg(RegClientRouteInboundHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -37,7 +38,7 @@ public class RegClientRouteInboundHandler extends ChannelInboundHandlerAdapter{
             ChatMessagePB.ChatMessageProto c = (ChatMessagePB.ChatMessageProto) msg;
             sender = c.getSender();
         } else {
-            Lg.log(this.getClass().getSimpleName() + " receive msg not of type ChatMessage.");
+            logger.log(this.getClass().getSimpleName() + " receive msg not of type ChatMessage.");
             return false;
         }
         RouterMap.setSourceChannel(sender, channel);

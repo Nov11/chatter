@@ -18,6 +18,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * Created by c0s on 16-4-20.
  */
 public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
+    private static Lg logger = new Lg(ClientHandlerInitializer.class);
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
@@ -35,8 +36,8 @@ public class ClientHandlerInitializer extends ChannelInitializer<Channel>{
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 Channel channel = future.channel();
-                Lg.log("server " + channel.remoteAddress() + " closed.");
-                Lg.log("exiting child program");
+                logger.log("server " + channel.remoteAddress() + " closed.");
+                logger.log("exiting child program");
             }
         });
     }

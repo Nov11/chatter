@@ -12,6 +12,7 @@ import io.netty.channel.*;
 
 @ChannelHandler.Sharable
 public class ServerChildHandler extends SimpleChannelInboundHandler<ChatMessagePB.ChatMessageProto> {
+    private static Lg logger = new Lg(ServerChildHandler.class);
     /**
      * look up router map, find the channel connected with receiver
      * send the message through that channel
@@ -25,11 +26,17 @@ public class ServerChildHandler extends SimpleChannelInboundHandler<ChatMessageP
 
         Channel channel = RouterMap.findDestinationChannel(msg.getReceviver());
         if (channel == null) {
-            Lg.log("message:" + msg + " receiver connection not found.");
+            logger.log("message:" + msg + " receiver connection not found.");
             ChatMessage m = new ChatMessage(0, "server", msg.getSender(), "dest: '" + msg.getReceviver() + "' is not online. Msg dropped.");
             ctx.writeAndFlush(m.getChatMessageProto());
             return;
         }
         channel.writeAndFlush(msg);
+    }
+
+    public static void main(String[] args) {
+        ChatMessage m = new ChatMessage(0, "server", "client" , "is not online. Msg dropped.");
+        ChatMessagePB.ChatMessageProto proto = m.getChatMessageProto();
+        System.out.println(proto + " lalalal");
     }
 }

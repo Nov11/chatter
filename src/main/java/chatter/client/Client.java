@@ -18,6 +18,8 @@ import java.io.*;
  * Created by c0s on 16-4-20.
  */
 public class Client {
+    private static Lg logger = new Lg(Client.class);
+
     private Bootstrap bootstrap;
     private EventLoopGroup eventLoopGroup;
 
@@ -86,10 +88,10 @@ public class Client {
     }
 
     private void shutdown() {
-        Lg.log("shutdown hook running");
+        logger.log("shutdown hook running");
         long start = System.currentTimeMillis();
         eventLoopGroup.shutdownGracefully().syncUninterruptibly();
         long end = System.currentTimeMillis();
-        Lg.log("eventLoopGroup shutdown takes : " + (end - start) / 1000 + "s");
+        logger.log("eventLoopGroup shutdown takes : " + (end - start) / 1000 + "s");
     }
 }

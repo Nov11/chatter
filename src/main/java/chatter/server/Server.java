@@ -17,6 +17,7 @@ import java.net.InetSocketAddress;
  * Created by c0s on 16-4-20.
  */
 public class Server {
+    private static Lg logger = new Lg(Server.class);
 
     private EventLoopGroup parent;
     private EventLoopGroup child;
@@ -26,13 +27,13 @@ public class Server {
         Server server = new Server();
         Channel channel = server.boot(Address.serverAddress);
         channel.closeFuture().syncUninterruptibly();
-        Lg.log("main exits");
+        logger.log("main exits");
         new Thread(){
             @Override
             public void run() {
                 try {
                     Thread.sleep(4000l);
-                    Lg.log("e");
+                    logger.log("e");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -55,12 +56,12 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-                Lg.log("shutdown hook running.");
+                logger.log("shutdown hook running.");
                 long start = System.currentTimeMillis();
                 parent.shutdownGracefully();
                 child.shutdownGracefully();
                 long end = System.currentTimeMillis();
-                Lg.log("server shutdown hook took " + (end - start) / 1000 + "s to complete");
+                logger.log("server shutdown hook took " + (end - start) / 1000 + "s to complete");
             }
         });
         return channel;

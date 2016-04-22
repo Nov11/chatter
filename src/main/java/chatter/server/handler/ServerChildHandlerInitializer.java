@@ -18,6 +18,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
  * Created by c0s on 16-4-20.
  */
 public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
+    private static Lg logger = new Lg(ServerChildHandlerInitializer.class);
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
@@ -25,9 +26,9 @@ public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 Channel channel = future.channel();
-                Lg.log("channel related to '" + RouterMap.findRelatedUser(channel) + "' is closed by client: " + channel.remoteAddress() + ".");
+                logger.log("channel related to '" + RouterMap.findRelatedUser(channel) + "' is closed by client: " + channel.remoteAddress() + ".");
                 RouterMap.removeSourceChannel(future.channel());
-                Lg.log("channel removed.");
+                logger.log("channel removed.");
             }
         });
 
