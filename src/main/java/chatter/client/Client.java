@@ -46,9 +46,6 @@ public class Client {
                 .option(ChannelOption.SO_REUSEADDR, true);
         ChannelFuture future = bootstrap.connect(Address.serverAddress);
         channel = future.sync().channel();
-        if (channel.isActive()) {
-            System.out.println("llll");
-        }
         System.out.println(locateName + ": " + channel.localAddress());
         //prefer command line close than this one below:
 //        Runtime.getRuntime().addShutdownHook(new Thread() {

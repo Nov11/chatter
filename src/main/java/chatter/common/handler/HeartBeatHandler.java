@@ -30,8 +30,11 @@ public class HeartBeatHandler extends ChannelDuplexHandler{
         ByteBuf buf = (ByteBuf)msg;
         if (buf.readableBytes() >= HearBeatConstants.pingLen) {
             ByteBuf incoming = buf.slice(0, HearBeatConstants.pingLen);
-            if (ByteBufUtil.compare(incoming, HearBeatConstants.ping) == 0) {
+            if (ByteBufUtil.equals(incoming, HearBeatConstants.ping)) {
                 ctx.writeAndFlush(HearBeatConstants.pong);
+                buf.readBytes(HearBeatConstants.pingLen);
+                return;
+            } else if (ByteBufUtil.equals(incoming, HearBeatConstants.pong)) {
                 buf.readBytes(HearBeatConstants.pingLen);
                 return;
             }
