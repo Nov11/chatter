@@ -11,6 +11,8 @@ import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 
 /**
  * Created by c0s on 16-4-20.
@@ -38,7 +40,9 @@ public class ServerChildHandlerInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(new ProtobufDecoder(ChatMessagePB.ChatMessageProto.getDefaultInstance()));
 //        pipeline.addLast(new MsgDecoder());
 //        pipeline.addLast(new MsgEncoder());
-        pipeline.addLast(new RegClientRouteInboundHandler());
-        pipeline.addLast(new ServerChildHandler());
+
+        EventExecutorGroup executorGroup = new DefaultEventExecutorGroup(10);
+        pipeline.addLast(executorGroup, new RegClientRouteInboundHandler());
+        pipeline.addLast(executorGroup, new ServerChildHandler());
     }
 }
