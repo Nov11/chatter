@@ -48,12 +48,12 @@ public class Client {
         channel = future.sync().channel();
         System.out.println(locateName + ": " + channel.localAddress());
         //prefer command line close than this one below:
-//        Runtime.getRuntime().addShutdownHook(new Thread() {
-//            @Override
-//            public void run() {
-//                shutdown();
-//            }
-//        });
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
 
         new Thread() {
             @Override
@@ -63,7 +63,6 @@ public class Client {
                 try {
                     while ((line = reader.readLine()) != null) {
                         if (line.equals("exit")) {
-//                            System.exit(0);
                             channel.close();
                             return;
                         }
@@ -81,7 +80,7 @@ public class Client {
         //shutdown netty when server close connection
         //maybe a connection retry will be added in future.
         channel.closeFuture().syncUninterruptibly();
-        shutdown();
+//        shutdown();
         //exit the client [workable]
         System.exit(0);
     }
