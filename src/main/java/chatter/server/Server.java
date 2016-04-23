@@ -4,9 +4,7 @@ import chatter.common.Address;
 import chatter.common.Lg;
 import chatter.server.handler.ServerChildHandlerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
@@ -25,23 +23,11 @@ public class Server {
 
     public static void main(String[] args) {
         Server server = new Server();
-        Channel channel = server.boot(Address.serverAddress);
-        channel.closeFuture().syncUninterruptibly();
+        server.boot(Address.serverAddress);
         logger.log("main exits");
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(4000l);
-                    logger.log("e");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
-    public Channel boot(InetSocketAddress inetSocketAddress) {
+    public void boot(InetSocketAddress inetSocketAddress) {
         parent = new NioEventLoopGroup();
         child = new NioEventLoopGroup();
         serverBootstrap = new ServerBootstrap();
@@ -56,14 +42,21 @@ public class Server {
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-                logger.log("shutdown hook running.");
-                long start = System.currentTimeMillis();
-                parent.shutdownGracefully();
-                child.shutdownGracefully();
-                long end = System.currentTimeMillis();
-                logger.log("server shutdown hook took " + (end - start) / 1000 + "s to complete");
+                shutdown();
             }
         });
-        return channel;
+        channel.closeFuture().syncUninterruptibly();
+    }
+
+    private void shutdown() {
+        logger.log("shutdown hook running.");
+        long start = System.currentTimeMillis();
+        parent.shutdownGracefully().syncUninterruptibly();
+        child.shutdownGracefully().syncUninterruptibly();
+        long end = System.currentTimeMillis();
+        logger.log("server shutdown hook took " + (end - start) / 1000 + "s to complete");
+        //this is clumsy.
+        Lg.closeLogger();
+        Lg.sync();
     }
 }

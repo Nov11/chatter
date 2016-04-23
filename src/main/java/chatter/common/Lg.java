@@ -15,7 +15,7 @@ public class Lg {
     private Class tClass;
     private static BlockingQueue<String> workQueue = new LinkedBlockingQueue<String>(200);
     private static Writer output = new OutputStreamWriter(System.err);
-    private static Thread workThread;
+    public  static Thread workThread;
     private static volatile boolean active;
 
     private ThreadLocal<SimpleDateFormat> FORMAT = new ThreadLocal<SimpleDateFormat>() {
@@ -40,7 +40,8 @@ public class Lg {
                 " " +
                 tClass.getSimpleName() +
                 " " +
-                string;
+                string +
+                "\n";
 
         try {
             workQueue.put(s);
@@ -51,7 +52,7 @@ public class Lg {
         return true;
     }
 
-    static class LogWriter implements Runnable {
+    private static class LogWriter implements Runnable {
         @Override
         public void run() {
             String str;
@@ -68,9 +69,10 @@ public class Lg {
                     break;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    System.err.println("logger exit");
+                    closeLogger();
                 }
             }
-            System.out.println("LogWriter exit");
             try {
                 output.close();
             } catch (IOException e) {
@@ -87,6 +89,14 @@ public class Lg {
 
     public static void closeLogger() {
         active = false;
+    }
+
+    public static void sync() {
+        try {
+            workThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public <T> Lg(Class<T> tClass) {

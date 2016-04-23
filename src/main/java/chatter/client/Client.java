@@ -84,6 +84,7 @@ public class Client {
         channel.closeFuture().syncUninterruptibly();
 //        shutdown();
         //exit the client [workable]
+        //shutdown the system.in reader thread if it is reading.
         System.exit(0);
     }
 
@@ -93,5 +94,7 @@ public class Client {
         eventLoopGroup.shutdownGracefully().syncUninterruptibly();
         long end = System.currentTimeMillis();
         logger.log("eventLoopGroup shutdown takes : " + (end - start) / 1000 + "s");
+        Lg.closeLogger();
+        Lg.sync();
     }
 }
