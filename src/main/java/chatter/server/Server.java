@@ -56,6 +56,7 @@ public class Server {
         long end = System.currentTimeMillis();
         logger.log("server shutdown hook took " + (end - start) / 1000 + "s to complete");
         //this is clumsy.
+        //I've read jcip chapter 7 on aync logger. but this following code makes Lg clumsy to use.
         Lg.closeLogger();
         Lg.sync();
     }
