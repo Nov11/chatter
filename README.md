@@ -7,9 +7,9 @@ Utilize Netty to take care of network communication.
 + heartbeat
 + ProtoBuf serialization
 + basic logging
++ async logging(but with ugly working-thread closing)
 
 ### Future Work:
-+ async logging
 + message routing
 + authentication server
 + offline message storage
