@@ -9,7 +9,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * Async logger inspired by jcip. Maybe chapter 7? content resides along thread pool.
+ *
  * Created by c0s on 16-4-20.
+ *
+ * I have read codes in log4j(org.apache.log4j.AsyncAppender).
+ * It says :" It is the user's responsibility to close appenders before exiting."
+ * But I find it weired to close logger intentionally.
  */
 public class Lg {
     private Class tClass;
